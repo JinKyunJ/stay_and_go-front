@@ -1,9 +1,9 @@
-import axios from "axios";
+import api from "../util/axiosInstance"; // axios 대신 api를 임포트
 
 /** 이메일 인증번호 전송 API 함수 */
 export async function sendEmailCertification(email: string) {
   try {
-    const response = await axios.post("http://localhost:3000/users/verify", {
+    const response = await api.post("http://localhost:3000/users/verify", {
       email,
     });
 
@@ -22,13 +22,10 @@ export async function sendEmailCertification(email: string) {
 /** 이메일 인증번호 확인 API 함수 */
 export async function certificationCode(email: string, code: string) {
   try {
-    const response = await axios.post(
-      "http://localhost:3000/users/verify/confirm",
-      {
-        email,
-        code,
-      }
-    );
+    const response = await api.post("http://localhost:3000/users/verify/confirm", {
+      email,
+      code,
+    });
 
     if (response.status === 200) {
       return response.data; // 변수에 할당하지 않고 데이터 반환

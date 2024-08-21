@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../../util/axiosInstance"; // axios 대신 api를 임포트
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useRef, MouseEvent, FormEvent } from "react";
@@ -87,28 +87,27 @@ const Findpassword: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post<{message: string}>('/users/verify/findpw', {email});
+      const response = await api.post<{ message: string }>("/users/verify/findpw", { email });
       if (emailRequestBtn.current) {
-      e.target.disabled = true;
+        e.target.disabled = true;
       }
       alert(response.data.message);
-    } catch(error) {
+    } catch (error) {
       alert(error?.response?.data?.message);
     }
-  }; 
+  };
 
   // 이메일 인증 확인 버튼 클릭 시
-  const onEmailCheckHandler = async (e:  FormEvent<HTMLFormElement>) => {
+  const onEmailCheckHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const res = await axios.post<{code: number, message: string}>('/users/verify/confirm', {email, secret: code});
-      if(res.data.code === 200){
-        navigate("/changePassword", {state: {email} });
-      } 
-    } catch(error) {
+      const res = await api.post<{ code: number; message: string }>("/users/verify/confirm", { email, secret: code });
+      if (res.data.code === 200) {
+        navigate("/changePassword", { state: { email } });
+      }
+    } catch (error) {
       alert(error?.response?.data?.message);
     }
-
   };
 
   return (
@@ -123,7 +122,9 @@ const Findpassword: React.FC = () => {
             setEmail(e.target.value);
           }}
         />
-        <RequestBtn onClick={onEmailRequestHandler} ref={emailRequestBtn}>인증요청</RequestBtn>
+        <RequestBtn onClick={onEmailRequestHandler} ref={emailRequestBtn}>
+          인증요청
+        </RequestBtn>
       </FlexDiv>
       <FlexDiv>
         <LoginInput

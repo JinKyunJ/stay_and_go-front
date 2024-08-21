@@ -1,8 +1,8 @@
-import axios from "axios";
+import api from "../../util/axiosInstance"; // axios 대신 api를 임포트
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import React, { FormEvent, useState } from "react";
-import CryptoJS from 'crypto-js';
+import CryptoJS from "crypto-js";
 
 const LoginInput = styled.input`
   border: 1px solid #ddd;
@@ -57,7 +57,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
 
-  const encryptPassword = (password: string, key: string) : string => {
+  const encryptPassword = (password: string, key: string): string => {
     const encryptedPassword = CryptoJS.AES.encrypt(password, key).toString();
     return encryptedPassword;
   };
@@ -71,15 +71,19 @@ const Login: React.FC = () => {
       const key = `${process.env.REACT_APP_AES_KEY}`;
       const aesPassword = encryptPassword(password, key);
 
-      const response = await axios.post("/login", { email, password: aesPassword }, {
-         // 쿠키를 포함시키기 위해 필요
-    });
+      const response = await api.post(
+        "/login",
+        { email, password: aesPassword },
+        {
+          // 쿠키를 포함시키기 위해 필요
+        },
+      );
       // 여행, 등록숙소 페이지에서 새로고침 시 로그인 상태 확인용 localstorage data 추가
-      // : front 에서 강제로 localstorage 를 수정하더라도 그 때는 전역 상태 loginstate 에 저장된 값에 따라 
+      // : front 에서 강제로 localstorage 를 수정하더라도 그 때는 전역 상태 loginstate 에 저장된 값에 따라
       // 데이터를 출력하기 때문에 빈 값이 나오도록 함.
-      localStorage.setItem('is_logined', "true");
+      localStorage.setItem("is_logined", "true");
       window.location.href = "/";
-    } catch(error) {
+    } catch (error) {
       alert(error.response.data.message);
     }
   };

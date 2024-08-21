@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../../util/axiosInstance"; // axios 대신 api를 임포트
 import styled from "styled-components";
 import React, { useState, useRef, useEffect, ChangeEvent, FormEvent, MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
@@ -96,14 +96,11 @@ const Join: React.FC = () => {
 
           /** 영문, 숫자, 특수문자(공백 제외) 포함 여부 확인 / 정규표현식 사용 */
           const [hasLetter, hasNumber, hasSpecialChar] = PasswordRegex(inputValue);
-          const isValidCombination =
-            [hasLetter, hasNumber, hasSpecialChar].filter(Boolean).length >= 2;
+          const isValidCombination = [hasLetter, hasNumber, hasSpecialChar].filter(Boolean).length >= 2;
           // filter() 이용해서 각각 2개 이상 조합 참, 거짓인지 확인
 
           if (!isValidCombination) {
-            setPasswordError2(
-              "영문/숫자/특수문자(공백 제외)만 허용하며, 2개 이상 조합"
-            );
+            setPasswordError2("영문/숫자/특수문자(공백 제외)만 허용하며, 2개 이상 조합");
           } else {
             setPasswordError2("");
           }
@@ -131,7 +128,7 @@ const Join: React.FC = () => {
     }
   }, [userInfo]);
 
-  const encryptPassword = (password: string, key: string) : string => {
+  const encryptPassword = (password: string, key: string): string => {
     const encryptedPassword = CryptoJS.AES.encrypt(password, key).toString();
     return encryptedPassword;
   };
@@ -141,7 +138,7 @@ const Join: React.FC = () => {
     e.preventDefault();
 
     try {
-      if(!userInfo.nickName || userInfo.nickName.length < 2){
+      if (!userInfo.nickName || userInfo.nickName.length < 2) {
         alert("닉네임을 2 글자 이상 입력해주세요.");
         return;
       }
@@ -156,59 +153,54 @@ const Join: React.FC = () => {
       const key = `${process.env.REACT_APP_AES_KEY}`;
       const aesPassword = encryptPassword(userInfo.password, key);
 
-      await axios.post("/users", {
-        email: userInfo.email,
-        password: aesPassword,
-        name: userInfo.name,
-        nickname: userInfo.nickName,
-        phone: userInfo.phone,
-      })
-      .then(res => {
-        navigate("/joinEnd");
-      })
-      .catch(e => {
-        alert(e?.response?.data?.message);
-      });
-      
-    } catch(error) {
+      await api
+        .post("/users", {
+          email: userInfo.email,
+          password: aesPassword,
+          name: userInfo.name,
+          nickname: userInfo.nickName,
+          phone: userInfo.phone,
+        })
+        .then((res) => {
+          navigate("/joinEnd");
+        })
+        .catch((e) => {
+          alert(e?.response?.data?.message);
+        });
+    } catch (error) {
       console.log(error);
       alert(error?.response?.data?.message);
     }
-
   };
 
   // 이메일 요청 버튼 클릭 시
   const onEmailRequestHandler = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/users/verify", {
+      const response = await api.post("/users/verify", {
         email: userInfo.email,
       });
-      if(response.data.code == 200) {
-        if ( emailRequestBtn.current && emailCodeInput.current) {
+      if (response.data.code == 200) {
+        if (emailRequestBtn.current && emailCodeInput.current) {
           e.target.disabled = true;
           emailCodeInput.current.readOnly = false;
         }
       }
       alert(response.data.message);
       // 이메일 인증 요청 시 버튼 비활성화
-    } catch(error) {
+    } catch (error) {
       e.target.disabled = false;
       alert(error?.response?.data?.message);
-    };
+    }
   };
-
 
   // 이메일 인증 확인 버튼 클릭 시
   const onEmailCheckHandler = async (e) => {
     try {
-      const response = await axios.post(
-        "/users/verify/confirm",
-        {
-          email: userInfo.email,
-          secret: userInfo.code,
-        }
-      );
+      const response = await api.post("/users/verify/confirm", {
+        email: userInfo.email,
+        secret: userInfo.code,
+      });
       // 이메일 인증 요청 시 버튼 비활성화
       if (emailOkBtn.current && emailCodeInput.current) {
         e.target.disabled = true;
@@ -216,8 +208,7 @@ const Join: React.FC = () => {
         emailOkBtn.current.style.cursor = "default";
       }
       alert(response.data.message);
-
-      } catch(error) {
+    } catch (error) {
       //emailRequestBtn.current.disabled = false;
       e.target.disabled = false;
       alert(error?.response?.data?.message); // 확인 !!
@@ -237,11 +228,7 @@ const Join: React.FC = () => {
           }}
           required
         />
-        <RequestBtn
-          type="button"
-          onClick={onEmailRequestHandler}
-          ref={emailRequestBtn}
-        >
+        <RequestBtn type="button" onClick={onEmailRequestHandler} ref={emailRequestBtn}>
           인증요청
         </RequestBtn>
       </FlexDiv>
