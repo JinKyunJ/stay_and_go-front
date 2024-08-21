@@ -1,10 +1,18 @@
 # 엘리스 SW 9기 2차 팀프로젝트
 
-## stay_and_go (숙박 예약 관리 웹사이트)
+## stay_and_go 🏡 (숙박 예약 관리 웹사이트)
 
-- [figma](https://www.figma.com/design/yuWfV0vXkD7WkJxjj4EOpU/Untitled?node-id=0-1&t=iG8MfBwKyWKTTzci-0)
+- [Figma](https://www.figma.com/design/yuWfV0vXkD7WkJxjj4EOpU/Untitled?node-id=0-1&t=iG8MfBwKyWKTTzci-0)
 
-- [postman](https://documenter.getpostman.com/view/35331809/2sA3kaCeUx#intro)
+- [Postman](https://documenter.getpostman.com/view/35331809/2sA3kaCeUx#intro)
+
+### 시연 영상 🎥
+
+<video width="720" height="480" controls>
+  <source src="./src/video/2차 팀프로젝트 시연영상.mp4" type="video/mp4">
+</video>
+
+### PPT
 
 ![2project-1](./src/images/2project-1.png)
 ![2project-2](./src/images/2project-2.png)
